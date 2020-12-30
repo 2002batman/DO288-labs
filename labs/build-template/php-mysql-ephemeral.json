@@ -118,7 +118,7 @@
                     "sourceStrategy": {
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "php:7.2",
+                            "name": "php:7.4",
                             "namespace": "${NAMESPACE}"
                         }
                     },
@@ -359,7 +359,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "mysql:5.7",
+                                "name": "mysql:8.0",
                                 "namespace": "${NAMESPACE}"
                             }
                         },
@@ -396,7 +396,8 @@
         {
             "name": "SOURCE_REPOSITORY_REF",
             "displayName": "Git Reference",
-            "description": "Set this to a branch name, tag or other ref of your repository if you are not using the default branch."
+            "description": "Set this to a branch name, tag or other ref of your repository if you are not using the default branch.",
+            "value": "do288"
         },
         {
             "name": "CONTEXT_DIR",
