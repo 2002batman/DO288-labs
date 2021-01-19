@@ -4,19 +4,6 @@ metadata:
   name: nexus3
 objects:
 - apiVersion: v1
-  kind: ImageStream
-  metadata:
-    name: ${NEXUS_SERVICE_NAME}
-  spec:
-    lookupPolicy:
-      local: true
-    tags:
-    - annotations: null
-      from:
-        kind: DockerImage
-        name: quay.io/2002batman/nexus3:latest
-      name: latest
-- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     annotations:
@@ -49,7 +36,7 @@ objects:
         containers:
         - env:
             - name: INSTALL4J_ADD_VM_PARAMS
-              value: REPLACE_JVM_OPTS
+              value: -Djava.util.prefs.userRoot=/nexus-data/javaprefs
           imagePullPolicy: Always
           livenessProbe:
             exec:
@@ -61,10 +48,10 @@ objects:
                http://localhost:8081/service/metrics/healthcheck |
                grep healthy | grep true
             failureThreshold: 3
-            initialDelaySeconds: REPLACE_DELAY
+            initialDelaySeconds: 120
             periodSeconds: 10
             successThreshold: 1
-            timeoutSeconds: REPLACE_TIMEOUT
+            timeoutSeconds: 30
           name: ${NEXUS_SERVICE_NAME}
           ports:
           - containerPort: 8081
@@ -79,10 +66,10 @@ objects:
                http://localhost:8081/service/metrics/ping |
                grep pong
             failureThreshold: 3
-            initialDelaySeconds: REPLACE_DELAY
+            initialDelaySeconds: 120
             periodSeconds: 10
             successThreshold: 1
-            timeoutSeconds: REPLACE_TIMEOUT
+            timeoutSeconds: 30
           resources:
             limits:
               cpu: "1"
@@ -93,17 +80,17 @@ objects:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
-          - mountPath: REPLACE_VOLUME_MOUNT
-            name: REPLACE_VOLUME_NAME
+          - mountPath: /nexus-data
+            name: nexus-data
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
         securityContext: {}
         terminationGracePeriodSeconds: 30
         volumes:
-        - name: REPLACE_VOLUME_NAME
+        - name: nexus-data
           persistentVolumeClaim:
-            claimName: REPLACE_CLAIM_NAME
+            claimName: nexus-data-pvc
     test: false
     triggers:
     - type: ConfigChange
@@ -113,7 +100,7 @@ objects:
         - ${NEXUS_SERVICE_NAME}
         from:
           kind: ImageStreamTag
-          name: nexus3:latest
+          name: nx:latest
       type: ImageChange
 - apiVersion: v1
   kind: Service
@@ -164,7 +151,7 @@ objects:
   metadata:
     labels:
       app: ${NEXUS_SERVICE_NAME}
-    name: REPLACE_PVC
+    name: nexus-data-pvc
   spec:
     accessModes:
     - ReadWriteOnce

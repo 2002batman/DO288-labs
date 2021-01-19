@@ -11,5 +11,5 @@ http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs \
     -e DATABASE_PASSWORD=redhat123 \
     -e DATABASE_INIT=false \
     --context-dir todo-single \
-    nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps
+    nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#do288
 
